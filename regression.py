@@ -91,9 +91,9 @@ clf = CatBoostRegressor(
     task_type="GPU",
     loss_function='RMSE',
     learning_rate=.01,
-    iterations=2000,
+    iterations=2500,
     boosting_type='Ordered',
-    depth=6,
+    depth=8,
 )
 
 clf.fit(X_train, y_train,
@@ -103,6 +103,6 @@ clf.fit(X_train, y_train,
     )
 
 print(clf.predict(test_data))
-print(clf.score(X_test, y_test))
-print("Feature importances:", list(clf.get_feature_importance()))
+print(clf.score(X_train, y_train))
 print(mean_squared_error(y_test, clf.predict(X_test)))
+print("Feature importances:", list(clf.get_feature_importance()))
