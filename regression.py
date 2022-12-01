@@ -4,9 +4,10 @@ from catboost import CatBoostRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
 
+
 # Read data
 train_data = pd.read_csv('AggYears.csv')
-test_data = pd.read_csv('21sea.csv')
+test_data = pd.read_csv('22sea.csv')
 
 # Pre processing
 train_data["Team"] = train_data["Team"].astype(str)
@@ -77,7 +78,7 @@ test_data.info()
 # Select features
 X = train_data.drop(['PFWins', 'Team', 'Rk', 'Year', 'Age'], axis=1)
 y = train_data['PFWins']
-test_data = test_data.drop(['Team', 'Rk', 'Year', 'Age'], axis=1)
+test_data_set = test_data.drop(['Team', 'Rk', 'Year', 'Age'], axis=1)
 
 # List how many labels we are using for training
 cat_features = list(range(0, X.shape[1]))
@@ -91,9 +92,11 @@ clf = CatBoostRegressor(
     task_type="GPU",
     loss_function='RMSE',
     learning_rate=.01,
-    iterations=2500,
+    iterations=1100,
     boosting_type='Ordered',
     depth=8,
+    bootstrap_type='Bayesian',
+    silent=True,
 )
 
 clf.fit(X_train, y_train,
@@ -102,7 +105,10 @@ clf.fit(X_train, y_train,
         # verbose=False,
     )
 
-print(clf.predict(test_data))
+tested_data = clf.predict(test_data_set)
+print("Playoff Wins for each team:")
+for i in range(len(tested_data)):
+    print(test_data["Team"][i],tested_data[i])
 print(clf.score(X_train, y_train))
 print(mean_squared_error(y_test, clf.predict(X_test)))
 print("Feature importances:", list(clf.get_feature_importance()))
