@@ -108,7 +108,8 @@ clf.fit(X_train, y_train,
 tested_data = clf.predict(test_data_set)
 print("Playoff Wins for each team:")
 for i in range(len(tested_data)):
-    print(test_data["Team"][i],tested_data[i])
+    print(test_data["Team"][i],",",tested_data[i])
 print(clf.score(X_train, y_train))
 print(mean_squared_error(y_test, clf.predict(X_test)))
-print("Feature importances:", list(clf.get_feature_importance()))
+# print feature names with corresponding feature importance
+print(dict(zip(X_train.columns, clf.feature_importances_)))
